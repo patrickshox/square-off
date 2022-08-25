@@ -4,6 +4,7 @@ var cookieParser = require("cookie-parser"); // see if needed
 var passport = require("passport");
 const { sessionMiddleware } = require("./middlewares/authentication");
 import { Request, Response } from "express-session"
+import { useSocketServer } from "socket-controllers";
 const GoogleStrategy = require("passport-google-oauth20").Strategy
 var dotenv = require('dotenv')
 dotenv.config();
@@ -72,6 +73,7 @@ io.use((socket, next) => {
     } else {
         console.log("unauthed")
         next();
-        // next(new Error('unauthorized'))
     }
 });
+
+useSocketServer(io, { controllers: [__dirname + "/api/controllers/*.ts"] });
