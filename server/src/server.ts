@@ -5,6 +5,9 @@ var passport = require("passport");
 const { sessionMiddleware } = require("./middlewares/authentication");
 import { Request, Response } from "express-session"
 const GoogleStrategy = require("passport-google-oauth20").Strategy
+var dotenv = require('dotenv')
+dotenv.config();
+
 
 // configure passport with Google Oauth
 passport.serializeUser((user, done) => {
@@ -29,6 +32,7 @@ function (_: any, __: any, profile: any, cb: any) {
 // express app 
 const app = express()
 .set("trust proxy", 1)
+.use(cors({ origin: "https://www.square-off.live/", credentials: true }))
 .use(cookieParser())
 .use(sessionMiddleware)
 .use(passport.initialize())
