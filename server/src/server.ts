@@ -64,7 +64,7 @@ http.listen(process.env.PORT)
 // socket.io
 var io = require("socket.io")(http,  {
     cors: {
-        origin: "https://square-off.live/",
+        origin: "https://api.square-off.live/",
         credentials: true
     },
 });
