@@ -67,7 +67,9 @@ io.use(wrap(passport.initialize()));
 io.use(wrap(passport.session()));
 
 io.use((socket, next) => {
-    console.log(socket.request)
+    console.log("🐰", socket.request)
+    console.log("🛸", socket.request.user)
+    console.log("🌊", socket.request.session)
     if (socket.request.user) {
         console.log("authed")
         next();
