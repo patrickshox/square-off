@@ -41,7 +41,7 @@ function (_: any, __: any, profile: any, cb: any) {
 // express app 
 const app = express()
 .set("trust proxy", 1)
-.use(cors({ origin: ["https://square-off.live/", "https://api.square-off.live/"], credentials: true }))
+.use(cors({ origin: "https://www.square-off.live/", credentials: true }))
 .use(cookieParser())
 .use(sessionMiddleware)
 .use(passport.initialize())
@@ -64,7 +64,7 @@ http.listen(process.env.PORT)
 // socket.io
 var io = require("socket.io")(http,  {
     cors: {
-        origin: ["https://square-off.live/", "https://api.square-off.live/"],
+        origin: "https://www.square-off.live/",
         credentials: true
     },
 });
