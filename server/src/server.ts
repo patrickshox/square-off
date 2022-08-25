@@ -3,13 +3,20 @@ var cors = require("cors");
 var cookieParser = require("cookie-parser"); // see if needed
 import "reflect-metadata";
 var passport = require("passport");
-const { sessionMiddleware } = require("./middlewares/authentication");
+// const { sessionMiddleware } = require("./middlewares/authentication");
 import { Request, Response } from "express-session"
 import { useSocketServer } from "socket-controllers";
 const GoogleStrategy = require("passport-google-oauth20").Strategy
 var dotenv = require('dotenv')
+var session = require("express-session");
 dotenv.config();
 
+// configure session (used in both app and socket)
+let sessionMiddleware = session({ 
+    secret: process.env.COOKIE_SECRET,
+    resave: false,
+    saveUninitialized: true
+})
 
 // configure passport with Google Oauth
 passport.serializeUser((user, done) => {
@@ -46,7 +53,6 @@ passport.authenticate('google', { failureRedirect: '/login'}), (req, res) => {
     res.redirect('https://www.square-off.live/#/play/');
 })
 .get("/getuser", (req: Request, res: Response) => {
-    req.session.user = req.user;
     res.header("Access-Control-Allow-Origin", "https://www.square-off.live");
     res.send(req.user);
 })
@@ -58,7 +64,7 @@ http.listen(process.env.PORT)
 // socket.io
 var io = require("socket.io")(http,  {
     cors: {
-        origin: "*",
+        origin: "https://www.square-off.live/",
     },
 });
 const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
