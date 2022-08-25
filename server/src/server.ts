@@ -15,7 +15,12 @@ dotenv.config();
 let sessionMiddleware = session({ 
     secret: process.env.COOKIE_SECRET,
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    httpOnly: false, // key
+    maxAge: null,
+    path: "/",
+    secure: true,
+    sameSite: 'none'
 })
 
 // configure passport with Google Oauth
