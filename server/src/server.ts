@@ -47,6 +47,7 @@ passport.authenticate('google', { failureRedirect: '/login'}), (req, res) => {
 
 // create server
 var http = require("http").Server(app);
+http.listen(process.env.PORT)
 
 // socket.io
 var io = require("socket.io")(http);
@@ -66,6 +67,3 @@ io.use((socket, next) => {
         // next(new Error('unauthorized'))
     }
 });
-
-// launch
-http.listen(process.env.PORT)
