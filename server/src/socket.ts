@@ -35,6 +35,10 @@ export default (httpServer) => {
     });
   }); 
 
+  io.on("join_game", (socket) => {
+    console.log(socket.request)
+  })
+
   useSocketServer(io, { controllers: [__dirname + "/api/controllers/*.ts"] });
 
   return io;
