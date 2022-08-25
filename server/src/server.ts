@@ -1,65 +1,50 @@
-import "reflect-metadata";
-// import { app, sessionMiddleware } from "./app";
-const { app, sessionMiddleware } = require("./app")
-var debug = require("debug")("socketio-server:server");
-import * as http from "http";
-import socketServer from "./socket";
-import { Socket } from "socket.io";
-const passport = require("passport");
+const express = require("express");
+var cors = require("cors");
+var cookieParser = require("cookie-parser"); // see if needed
+var passport = require("passport");
+const { sessionMiddleware } = require("./middlewares/authentication");
+import { Request, Response } from "express-session"
 
-var port = normalizePort(process.env.PORT || "9000");
-app.set("port", port);
+// express app 
+const app = express()
+.use(cors())
+.use(cookieParser())
+.use(sessionMiddleware)
+.use(passport.initialize())
+.use(passport.session())
+.get('/auth/google', passport.authenticate('google', { scope: ['profile'] }))
+.get('/auth/google/callback',
+passport.authenticate('google', { failureRedirect: '/#/login'}), (req, res) => {
+    req.session.authenticated = true;
+    res.redirect('https://www.square-off.live/#/play/');
+})
+.get("/getuser", (req: Request, res: Response) => {
+    req.session.user = req.user;
+    res.header("Access-Control-Allow-Origin", "https://www.square-off.live");
+    res.send(req.user);
+})
 
-var server = http.createServer(app);
+// create server
+var http = require("http").Server(app);
 
-server.listen(process.env.PORT || port);
-server.on("error", onError);
-server.on("listening", onListening);
+// socket.io
+var io = require("socket.io")(http);
+const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
+io.use(wrap(sessionMiddleware));
+io.use(wrap(passport.initialize()));
+io.use(wrap(passport.session()));
 
-const io = socketServer(server);
+io.use((socket, next) => {
+    console.log(socket.request)
+    if (socket.request.user) {
+        console.log("authed")
+        next();
+    } else {
+        console.log("unauthed")
+        next();
+        // next(new Error('unauthorized'))
+    }
+});
 
-function normalizePort(val) {
-  var port = parseInt(val, 10);
-
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
-
-  if (port >= 0) {
-    // port number
-    return port;
-  }
-
-  return false;
-}
-
-function onError(error) {
-  if (error.syscall !== "listen") {
-    throw error;
-  }
-
-  var bind = typeof port === "string" ? "Pipe " + port : "Port " + port;
-
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case "EACCES":
-      console.error(bind + " requires elevated privileges");
-      process.exit(1);
-      break;
-    case "EADDRINUSE":
-      console.error(bind + " is already in use");
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
-}
-
-function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
-  debug("Listening on " + bind);
-  
-  console.log("Server Running on Port: ", port);
-}
+// launch
+http.listen(process.env.PORT)
