@@ -9,7 +9,7 @@ class SocketService {
   ): Promise<Socket<DefaultEventsMap, DefaultEventsMap>> {
     return new Promise((rs, rj) => {
       this.socket = io(url, {
-        transports: ["websocket"],
+        transports: ["websocket", 'polling', 'flashsocket'],
         withCredentials: true
       });
 
