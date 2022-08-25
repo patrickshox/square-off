@@ -54,9 +54,6 @@ function (_: any, __: any, profile: any, cb: any) {
   cb(null, profile)
 }));
 
-const authRouter = require("./routes/auth")
-app.use('/auth')
-
 app.get('/auth/google', passport.authenticate('google', { scope: ['profile'] }));
 
 app.get('/auth/google/callback',
