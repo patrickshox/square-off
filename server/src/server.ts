@@ -50,15 +50,15 @@ passport.authenticate('google', { failureRedirect: '/login'}), (req, res) => {
 })
 
 // create server
-var http = require("http").Server(app, {
+var http = require("http").Server(app);
+http.listen(process.env.PORT)
+
+// socket.io
+var io = require("socket.io")(http,  {
     cors: {
         origin: "*",
     },
 });
-http.listen(process.env.PORT)
-
-// socket.io
-var io = require("socket.io")(http);
 const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
 io.use(wrap(sessionMiddleware));
 io.use(wrap(passport.initialize()));
