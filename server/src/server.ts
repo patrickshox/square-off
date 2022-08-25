@@ -1,5 +1,6 @@
 import "reflect-metadata";
-import { app, sessionMiddleware } from "./app";
+// import { app, sessionMiddleware } from "./app";
+const { app, sessionMiddleware } = require("./app")
 var debug = require("debug")("socketio-server:server");
 import * as http from "http";
 import socketServer from "./socket";

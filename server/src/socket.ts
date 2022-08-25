@@ -1,7 +1,7 @@
 import { useSocketServer } from "socket-controllers";
 import { Server } from "socket.io";
 import gamesManager from "./api/controllers/gamesManager";
-import {sessionMiddleware} from "./app"
+const {sessionMiddleware} = require("./app")
 
 export default (httpServer) => {
   const io = new Server(httpServer, {
@@ -20,7 +20,7 @@ export default (httpServer) => {
   // ideally, i would have used the @OnMessage("disconnnecting"), but it isn't supported.
   io.on("connection", (socket) => {
     console.log((socket.request as any).session)
-    console.log("connected")
+    console.log((socket.request as any).session.authenticated)
     socket.on("disconnecting", (reason) => {
       for (const room of socket.rooms) {
         if (room !== socket.id) {

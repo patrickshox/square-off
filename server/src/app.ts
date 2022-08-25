@@ -1,13 +1,9 @@
-var createError = require("http-errors");
 var express = require("express");
 var session = require("express-session")
-var path = require("path");
-var passport = require("passport")
+ var passport = require("passport")
 var cookieParser = require("cookie-parser");
-var logger = require("morgan");
 import * as cors from "cors";
 import { Request, Response } from "express";
-import "reflect-metadata";
 var dotenv = require('dotenv')
 const GoogleStrategy = require("passport-google-oauth20").Strategy
 
@@ -31,26 +27,21 @@ app.use(cookieParser());
 app.set("trust proxy", 1);
 
 app.use(sessionMiddleware)
-  
-// app.use("/", indexRouter);
 
 // Middleware
-app.use(logger("dev"));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, "public")));
 app.use(cors({ origin: "https://www.square-off.live/#/login/", credentials: true }))
 
 app.use(passport.initialize());
 app.use(passport.session());
 
- 
+
 passport.serializeUser((user, done) => {
   return done(null, user);
 });
 
 passport.deserializeUser((user, done) => {
-    return done(null, user);
+  return done(null, user);
 })
 
 
@@ -59,17 +50,21 @@ passport.use(new GoogleStrategy({
   clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
   callbackURL: "/auth/google/callback"
 },
-  function (_: any, __: any, profile: any, cb: any) {
-    cb(null, profile)
-  }));
+function (_: any, __: any, profile: any, cb: any) {
+  cb(null, profile)
+}));
+
+const authRouter = require("./routes/auth")
+app.use('/auth')
 
 app.get('/auth/google', passport.authenticate('google', { scope: ['profile'] }));
 
 app.get('/auth/google/callback',
-  passport.authenticate('google', { failureRedirect: '/login'}),
-  function (req, res) {
-    res.redirect('https://www.square-off.live/#/play/');
-  });
+passport.authenticate('google', { failureRedirect: '/login'}),
+function (req, res) {
+  req.session.authenticated = true;
+  res.redirect('https://www.square-off.live/#/play/');
+});
 
 
 app.get("/", (req, res) => {
@@ -88,4 +83,6 @@ app.get("/auth/logout", (req, res) => {
   }
 })
 
-export { app , sessionMiddleware};
+
+exports.app = app
+exports.sessionMiddleware = sessionMiddleware

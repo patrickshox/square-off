@@ -17,6 +17,8 @@ export class RoomController {
   @OnMessage("join_game")
   public async joinGame(@SocketIO() io: Server, @ConnectedSocket() socket: Socket, @MessageBody() message: any) {
 
+    console.log((socket.request as any).session)
+
     const connectedSockets = io.sockets.adapter.rooms.get(message.roomId);
     const socketRooms = Array.from(socket.rooms.values()).filter(
       (r) => r !== socket.id
