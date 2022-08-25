@@ -28,7 +28,7 @@ function (_: any, __: any, profile: any, cb: any) {
 
 // express app 
 const app = express()
-.use(cors())
+.set("trust proxy", 1)
 .use(cookieParser())
 .use(sessionMiddleware)
 .use(passport.initialize())
