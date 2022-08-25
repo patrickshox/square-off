@@ -42,11 +42,6 @@ function (_: any, __: any, profile: any, cb: any) {
 const app = express()
 .set("trust proxy", 1)
 .use(cors({ origin: "https://www.square-off.live/", credentials: true }))
-.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-})
 .use(cookieParser())
 .use(sessionMiddleware)
 .use(passport.initialize())
@@ -70,6 +65,7 @@ http.listen(process.env.PORT)
 var io = require("socket.io")(http,  {
     cors: {
         origin: "https://www.square-off.live/",
+        credentials: true
     },
 });
 const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
