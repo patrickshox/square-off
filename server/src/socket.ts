@@ -20,7 +20,7 @@ export default (httpServer) => {
   // ideally, i would have used the @OnMessage("disconnnecting"), but it isn't supported.
   io.on("connection", (socket) => {
     console.log((socket.request as any).session)
-    alert("connected")
+    console.log("connected")
     socket.on("disconnecting", (reason) => {
       for (const room of socket.rooms) {
         if (room !== socket.id) {
