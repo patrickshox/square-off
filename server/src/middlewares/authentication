@@ -1,11 +1,12 @@
-var sessionMiddleware = session({
-  cookie: {
-    httpOnly: true , maxAge: 24 * 60 * 60 * 1000 },
-  name: sessionName,
-  store: sessionStore,
-  secret: secretKey,
-  resave: false,
-  saveUninitialized: true,
-});
+var session = require("express-session");
+
+let sessionMiddleware = session({ 
+    secret: "secretcode",
+    cookie: { sameSite: "none", secure: true, maxAge: 1000 * 60 * 60 * 24 },
+    resave: false,
+    saveUninitialized: true
+})
+
 
 module.exports = { sessionMiddleware }
+
