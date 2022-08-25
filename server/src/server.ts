@@ -2,7 +2,7 @@ const express = require("express");
 var cors = require("cors");
 var cookieParser = require("cookie-parser"); // see if needed
 import "reflect-metadata";
-var passport = require("passport");
+const passport = require("passport");
 // const { sessionMiddleware } = require("./middlewares/authentication");
 import { Request, Response } from "express-session"
 import { useSocketServer } from "socket-controllers";
@@ -15,7 +15,7 @@ dotenv.config();
 let sessionMiddleware = session({ 
     secret: process.env.COOKIE_SECRET,
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: false
 })
 
 // configure passport with Google Oauth
@@ -42,6 +42,11 @@ function (_: any, __: any, profile: any, cb: any) {
 const app = express()
 .set("trust proxy", 1)
 .use(cors({ origin: "https://www.square-off.live/", credentials: true }))
+.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+})
 .use(cookieParser())
 .use(sessionMiddleware)
 .use(passport.initialize())
