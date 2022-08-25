@@ -1,6 +1,7 @@
 const express = require("express");
 var cors = require("cors");
 var cookieParser = require("cookie-parser"); // see if needed
+import "reflect-metadata";
 var passport = require("passport");
 const { sessionMiddleware } = require("./middlewares/authentication");
 import { Request, Response } from "express-session"
