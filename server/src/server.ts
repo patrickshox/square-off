@@ -35,7 +35,7 @@ const app = express()
 .use(passport.session())
 .get('/auth/google', passport.authenticate('google', { scope: ['profile'] }))
 .get('/auth/google/callback',
-passport.authenticate('google', { failureRedirect: '/#/login'}), (req, res) => {
+passport.authenticate('google', { failureRedirect: '/login'}), (req, res) => {
     req.session.authenticated = true;
     res.redirect('https://www.square-off.live/#/play/');
 })
