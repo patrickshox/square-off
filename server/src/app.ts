@@ -3,7 +3,7 @@ var session = require("express-session")
  var passport = require("passport")
 var cookieParser = require("cookie-parser");
 import * as cors from "cors";
-import { Request, Response } from "express";
+import { Request, Response } from "express-session";
 var dotenv = require('dotenv')
 const GoogleStrategy = require("passport-google-oauth20").Strategy
 
@@ -69,6 +69,7 @@ app.get("/", (req, res) => {
 })
 
 app.get("/getuser", (req: Request, res: Response) => {
+  req.session.user = req.user;
   res.header("Access-Control-Allow-Origin", "https://www.square-off.live");
   res.send(req.user);
 })
