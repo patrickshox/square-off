@@ -50,7 +50,11 @@ passport.authenticate('google', { failureRedirect: '/login'}), (req, res) => {
 })
 
 // create server
-var http = require("http").Server(app);
+var http = require("http").Server(app, {
+    cors: {
+        origin: "*",
+    },
+});
 http.listen(process.env.PORT)
 
 // socket.io
