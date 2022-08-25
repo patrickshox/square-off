@@ -4,6 +4,27 @@ var cookieParser = require("cookie-parser"); // see if needed
 var passport = require("passport");
 const { sessionMiddleware } = require("./middlewares/authentication");
 import { Request, Response } from "express-session"
+const GoogleStrategy = require("passport-google-oauth20").Strategy
+
+// configure passport with Google Oauth
+passport.serializeUser((user, done) => {
+    return done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+    return done(null, user);
+})
+
+
+passport.use(new GoogleStrategy({
+    clientID: `${process.env.GOOGLE_CLIENT_ID}`,
+    clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
+    callbackURL: "/auth/google/callback"
+},
+function (_: any, __: any, profile: any, cb: any) {
+    cb(null, profile)
+}));
+
 
 // express app 
 const app = express()
